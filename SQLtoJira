@@ -1,0 +1,30 @@
+#! /usr/bin/env python3
+
+import re
+import sys
+
+print('Paste in your query, then hit CTRL+D twice')
+code = sys.stdin.read() #sys.stdin.read() allows multi-line inputs
+
+print('\nPaste in your table, columns must be seperated by a newline character. Hit CTRL+D twice when finished')
+table = sys.stdin.read().strip() #strip any proceeding or trailing white space off the input to ensure we only have the table
+
+delim = input('\n\n\nPlease enter your row deliminator\n')
+rawDelim = r'%s' %delim
+delimSearch = rawDelim + '|^|$' #create a variable for deliminator OR start of line OR end of line for use in regex
+
+splitTable = table.split('\n') #split the table into individual lines so we can add || to the first (and only the first) line
+for x in range(len(splitTable)): #iterate through each line in our table
+	doubleSplit = splitTable[x].split(rawDelim) #split each individual line from the table into our rows 
+	for y in range(len(doubleSplit)): #iterate through our rows to find any '' values and replace them with ' ' so the table looks clean in JIRA 
+		if doubleSplit[y] == '':
+			doubleSplit[y] = ' '
+	splitTable[x] = rawDelim.join(doubleSplit)	#rejoin our rows into one line
+deliminator = re.compile(delimSearch,re.M) #create a regex object to search for our deliminators
+splitTable[0] = deliminator.sub('||', splitTable[0]) #replace any matches on the first line with ||
+for i in range(1,len(splitTable)): #iteratre through the remaining lines
+	splitTable[i] = deliminator.sub('|', splitTable[i]) #replace regex matches with |
+table = '\n'.join(splitTable) #rejoin our lines into a full table
+print('\n\n\n')
+output = '{code}\n'+code+'\n'+'{code}\n\n' + table #add a {code} block to our query because it's pretty
+print(output)
