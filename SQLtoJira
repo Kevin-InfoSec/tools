@@ -3,10 +3,10 @@
 import re
 import sys
 
-print('Paste in your query, then hit CTRL+D twice')
+print('Paste in your query, then hit CTRL+D')
 code = sys.stdin.read() #sys.stdin.read() allows multi-line inputs
 
-print('\nPaste in your table, columns must be seperated by a newline character. Hit CTRL+D twice when finished')
+print('\nPaste in your table, columns must be seperated by a newline character. Hit CTRL+D when finished')
 table = sys.stdin.read().strip() #strip any proceeding or trailing white space off the input to ensure we only have the table
 
 delim = input('\n\n\nPlease enter your row deliminator\n')
